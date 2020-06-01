@@ -1,5 +1,3 @@
-# Brain Storming
-
 Devo avere una classe Node che memorizza gli indici i, j, k e anche se il nodo è una foglia (se lo è allora la parola è presente nel
 testo). Inoltre è presente un dizionario (di fatto una lista) e devo avere che i = S[i]. Devo avere la classe compressedTrie che si occupa
 di costruire la struttura dati inserendo i vari nodi. La classe compressedTrie deve avere un metodo che crea un nodo associato alle parole
