@@ -60,4 +60,13 @@ public class Node{
 		return this.rightSibling;
 	}
 
+	public int getStringIndex(){
+		return this.index[0];
+	}
+	public int[] getSubstring(){ 
+		int[] res =  {this.index[1] ,  this.index[2]};
+		return res;
+	}
+
+
 }
