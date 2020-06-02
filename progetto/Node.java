@@ -54,7 +54,18 @@ public class Node{
 
 	public void setSubString(String subString){
 		this.subString = subString;
-	}	
-
+	}
+	
+	public Node getParent(){
+		return this.parent;
+	}
+	
+	public Node getLeftChild(){
+		return this.leftChild;
+	}
+	
+	public Node getRightSibling(){
+		return this.rightSibling;
+	}
 
 }
