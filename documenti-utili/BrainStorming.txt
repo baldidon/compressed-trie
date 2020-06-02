@@ -4,6 +4,6 @@ di costruire la struttura dati inserendo i vari nodi. La classe compressedTrie d
 del dizionario, crea i nodi intermedi e si preoccupa di modificarli. L'idea è quella che alla creazione di un nuovo nodo si fa un confronto
 con i nodi già presenti e si modifica la struttura dati di conseguenza. L'operazione di confronto fra i nodi dovrebbe essere la più onerosa
 e consiste nel confrontare in primis l'indice 'i' dei nodi e poi scandire la sottosequenza. In pratica ho un ciclo for che parte da 'j' e
-l'indice 'v' (a titlo di esempio) del ciclo for cresce finchè l'ugaglianza fra il v-esimo elemento di entrambe le stringhe è verificata.
+l'indice 'v' (a titlo di esempio) del ciclo for cresce finchè l'uguaglianza fra il v-esimo elemento di entrambe le stringhe è verificata.
 C'è da capire in che modo associare al nodo una parola e come far corrispondere uno scorrimento di indice ad un progressivo confronto dei
 caratteri delle varie stringhe del dizionario.
