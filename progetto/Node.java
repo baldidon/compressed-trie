@@ -8,9 +8,7 @@ public class Node{
 
 	public boolean isLeaf;
 
-	public String subString;
-
-	public Node(int i, int j, int k, String subString){
+	public Node(int i, int j, int k){
 
 		this.index = new int[3];
 		this.index[0] = i;
@@ -22,8 +20,6 @@ public class Node{
 		this.rightSibling = null;
 
 		this.isLeaf = false;
-
-		this.subString = subString;
 
 	} // end constructor
 
@@ -51,10 +47,6 @@ public class Node{
 	public void setLeaf(boolean isLeaf){
 		this.isLeaf = isLeaf;
 	}
-
-	public void setSubString(String subString){
-		this.subString = subString;
-	}
 	
 	public Node getParent(){
 		return this.parent;
@@ -66,10 +58,6 @@ public class Node{
 	
 	public Node getRightSibling(){
 		return this.rightSibling;
-	}
-
-	public String getSubString(){
-		return this.subString;
 	}
 
 }
