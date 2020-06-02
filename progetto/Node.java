@@ -68,4 +68,8 @@ public class Node{
 		return this.rightSibling;
 	}
 
+	public String getSubString(){
+		return this.subString;
+	}
+
 }
