@@ -59,5 +59,4 @@ public class Node{
 	public Node getRightSibling(){
 		return this.rightSibling;
 	}
-
 }
