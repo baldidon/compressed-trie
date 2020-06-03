@@ -53,7 +53,7 @@ public class TrieCompressed {
     public void swapChildren(Node n, Node n1){
         Node aux = n.getLeftChild();
         while(aux!= null){
-            
+
             this.addChild(n1, aux.getStringIndex(), aux.getSubstring()[0], aux.getSubstring()[1]);
 
             aux = aux.getRightSibling();
@@ -138,7 +138,7 @@ public class TrieCompressed {
             //tengo il riferimento a prevAuxNode solo perchè, quando auxNode è null, ho il riferimento dell'ultimo nodo non nullo a cui attacco il "nodo da aggiungere"
             Node prevAuxNode = this.root;
             //per "visitare ogni nodo dell'albero     
-            int j=0;//indice che uso per scorrere le parole
+            int j=0;//indice che uso per scorrere i caratteri ugyali
             //itero fra i nodi
             while(auxNode != null){
                 //se non trovo un nodo al livello j con la coincidenza di carattere desiderata, scorro al fratello
@@ -149,17 +149,18 @@ public class TrieCompressed {
                     auxNode = auxNode.getRightSibling();
                 }
                 //ho trovato una corrispondenza
-                else
+                else 
                 {
+                    int k = j; //numero di occorrenze fra prefissi
                     //conto quante occorrenze ho fra le stringhe
-                    while(stringAuxNode.charAt(j) == stringToAdd.charAt(j))
+                    while(stringAuxNode.charAt(k) == stringToAdd.charAt(k) && k<stringToAdd.length()-1)
                     {
-                        j++;
+                        k++;
                     }
                     //controllo se la sottostringa ottenuta è più piccola di quella ottenuta precedentemente
                     //se sì devo cambiare indici sottostringa auxNode e devo cambiare 
                     //se non ha figli, la sottostringa associata al nodo è la lunghezza stessa della stringa!
-                    if(auxNode.getSubstringLength()>=j)
+                    if(auxNode.getSubstringLength()>k)
                     {
                         //se trovo questa relazione, so per certo che la parola viene agganciata a tale nodo!
                         if(auxNode.getLeftChild()==null)
@@ -167,27 +168,35 @@ public class TrieCompressed {
                             //ho trovato dove mettere la parola!
                             findOccurrence = true;
                             //se il nodo "incriminato non ha figli" cambio gli indici al nodo e gli affibbio due nuovi figli!
-                            auxNode.setIndex(auxNode.getStringIndex(), auxNode.getSubstring()[0], j);
-                            this.addChild(auxNode, auxNode.getStringIndex(), j, stringAuxNode.length());
-                            this.addChild(auxNode, i, j, stringToAdd.length());
+                            auxNode.setIndex(auxNode.getStringIndex(), auxNode.getSubstring()[0],k);
+                            this.addChild(auxNode, auxNode.getStringIndex(), k, stringAuxNode.length());
+                            this.addChild(auxNode, i, k, stringToAdd.length());
+
+                            auxNode = null;
                         }
-                        else
+                        else //auxNode ha dei figli
                         {   
                             findOccurrence = true;
-                            Node newAuxNode = new Node(auxNode.getStringIndex(),j,auxNode.getSubstring()[1]);
+                            Node newAuxNode = new Node(auxNode.getStringIndex(),k,auxNode.getSubstring()[1]);
                             this.swapChildren(auxNode, newAuxNode);
-                            auxNode.setIndex(auxNode.getStringIndex(), auxNode.getSubstring()[0], j);
+                            auxNode.setIndex(auxNode.getStringIndex(), auxNode.getSubstring()[0], k);
                             auxNode.setLeftChild(newAuxNode);
-                            this.addChild(auxNode, i, j, stringToAdd.length());
+                            this.addChild(auxNode, i, k, stringToAdd.length());
+                            
+                            auxNode = null;
                         }
                         
 
                     }
-                    else //vuol dire che ho trovato una corrispondenza fra i prefissi maggiore, e ciò accade quando ho certamente già dei figli!
+                    else//vuol dire che ho trovato una corrispondenza fra i prefissi maggiore, e ciò accade quando ho certamente già dei figli!
                     {
                         j++;
                         prevAuxNode = auxNode;
                         auxNode = auxNode.getLeftChild();
+
+
+
+
                     }
                 }
             }
@@ -220,8 +229,10 @@ public class TrieCompressed {
                 else 
                     if(n.getRightSibling() != null) 
                         n = n.getRightSibling();
-                    else 
+                    else{
                         n = n.getParent().getRightSibling();
+                        System.out.print("\n");
+                    }
             }
         } 
     } 
