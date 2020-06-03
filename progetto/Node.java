@@ -68,5 +68,8 @@ public class Node{
 		return res;
 	}
 
+	public int getSubstringLength(){
+		return index[2] - index[1];
+	}
 
 }

@@ -35,7 +35,7 @@ public class WordParser {
             while ((auxiliaryBuffer = importFile.readLine()) != null /*&& (!auxiliaryBuffer.isEmpty())*/) {
             		st = new StringTokenizer(auxiliaryBuffer);
                     while (st.hasMoreTokens()) { //finchè ho parole nella frase
-                    	auxiliaryWord = st.nextToken().toLowerCase().trim().replaceAll("[^a-z]", ""); //tutto minuscolo
+                    	auxiliaryWord = st.nextToken().toLowerCase().trim().replaceAll("[^a-z]", "")+"*"; //tutto minuscolo
                     	/*
                     	 *qui sotto dico: tanto i segni di punteggiatura so sempre in coda alla 
                     	 */
