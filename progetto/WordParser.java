@@ -35,12 +35,12 @@ public class WordParser {
             while ((auxiliaryBuffer = importFile.readLine()) != null /*&& (!auxiliaryBuffer.isEmpty())*/) {
             		st = new StringTokenizer(auxiliaryBuffer);
                     while (st.hasMoreTokens()) { //finchè ho parole nella frase
-                    	auxiliaryWord = st.nextToken().toLowerCase(); //tutto minuscolo
+                    	auxiliaryWord = st.nextToken().toLowerCase().trim().replaceAll("[^a-z]", ""); //tutto minuscolo
                     	/*
                     	 *qui sotto dico: tanto i segni di punteggiatura so sempre in coda alla 
                     	 */
-                    	if(!stringExaminator(auxiliaryWord).equals(""))
-                    		words.add(auxiliaryWord.trim().replaceAll("[ \\p{Punct}]", ""));
+                    	if(!auxiliaryWord.equals(""))
+                    		words.add(auxiliaryWord);
                      }
 
             }
@@ -56,18 +56,8 @@ public class WordParser {
         }
     }
     
-    //"pulisco" la stringa da segni di punteggiatura (nell'ipotesi che a scrivere il testo sia stato un competente, i segni
-    //di punteggiatura vanno sempre in fondo alla parola) e restituisco stringa vuota se stringa è un - o un numero
-    private String stringExaminator(String auxiliaryWord) {
-    	if(auxiliaryWord.contains("("))
-    		auxiliaryWord = auxiliaryWord.substring(1,auxiliaryWord.length());
-    	if(auxiliaryWord.contains("("))
-    		auxiliaryWord = auxiliaryWord.substring(0,auxiliaryWord.length()-2);
-   
-    	if(auxiliaryWord.equals("-") /*|| da aggiungere se c'è un numero*/)
-			auxiliaryWord = "";
-
-		return auxiliaryWord;
+    public ArrayList<String> getList(){
+        return this.words;
     }
 
     public String toString() {
