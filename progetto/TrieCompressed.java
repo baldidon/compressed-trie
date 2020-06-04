@@ -48,14 +48,18 @@ public class TrieCompressed {
         }
 
     }
+    
 
     //i figli del nodo n, diventano figli del nodo n1
     //non controllo se ci sono figli per il solo fatto che questo metodo viene invocato QUANDO SO SICURO CHE CI SIANO I BAMBINI DI MEZZO!
-    public void swapChildren(Node n, Node n1){
-        Node aux = n.getLeftChild();
-
+    public void swapChildren(Node oldParent, Node newParent){
+        Node aux = oldParent.getLeftChild();
+        aux.setParent(newParent);
+        newParent.setLeftChild(aux);
+        aux = aux.getRightSibling();
+        //controllo gli eventuali fratelli
         while(aux!= null){
-            this.addChild(n1, aux.getStringIndex(), aux.getSubstring()[0], aux.getSubstring()[1]);
+            aux.setParent(newParent);
             aux = aux.getRightSibling();
 
         }
@@ -125,7 +129,7 @@ public class TrieCompressed {
                             auxNode.setLeftChild(newAuxNode);
                             this.addChild(auxNode, i, k, stringToAdd.length());
                             //ONLY FOR DEBUG
-                            this.traverseTree(auxNode);
+                            //this.traverseTree(auxNode);
                             
                             auxNode = null;
                         }
@@ -158,11 +162,16 @@ public class TrieCompressed {
     //A MALINCUORE DICO ARRUBBATO DA INTERNET
     // visita all'albero
     //only debug, sparirà brutalmente
+    /*idea:
+    * scorro tutti i figli sinistri, al primo figlio mancante vado verso i fratelli dell'ultimo figlio sinistro.
+      poi risalgo!
+    */
 
     public void traverseTree(Node n){ 
         while(n != null) 
         {   
             if(n.equals(this.root))
+            //se sono la radice, passo subito al primo figlio!
                 n = n.getLeftChild();
             else{
                 System.out.print(dict.get(n.getStringIndex()).substring(n.getSubstring()[0],n.getSubstring()[1])+ " "); 
@@ -171,17 +180,20 @@ public class TrieCompressed {
                 else 
                     if(n.getRightSibling() != null) 
                         n = n.getRightSibling();
+                    
+                
                     else if(n.getParent().getRightSibling() != null) {
                         n = n.getParent().getRightSibling();
                         //System.out.print("\n");
                     }
-                    else if(n.getParent().getParent().getRightSibling()!= null){
+                    else if((n.getParent() != this.root) && (n.getParent().getParent().getRightSibling()!= null)){
                         n = n.getParent().getParent().getRightSibling();
                     }
                            
                     else {
                         return;
                     }
+                
             }
 
         } 
