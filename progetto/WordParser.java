@@ -15,10 +15,13 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 
 
-
 public class WordParser {
 
     private ArrayList<String> words = null;
+
+    private String[] preposizioni = {"di*", "a*", "da*", "in*", "con*", "su*", "per*", "tra*", "fra*"};
+
+    private boolean aggiungiParola; //variabile utilizzata per capire se la parola è ammessa
 
     public WordParser() {
         this.words = new ArrayList<>();
@@ -34,13 +37,29 @@ public class WordParser {
 
             while ((auxiliaryBuffer = importFile.readLine()) != null /*&& (!auxiliaryBuffer.isEmpty())*/) {
             		st = new StringTokenizer(auxiliaryBuffer);
-                    while (st.hasMoreTokens()) { //finchè ho parole nella frase
-                    	auxiliaryWord = st.nextToken().toLowerCase().trim().replaceAll("[^a-z]", "")+"*"; //tutto minuscolo
-                    	/*
+                    while (st.hasMoreTokens()) { //finchè ho parole nella frase                  
+                                         
+                        auxiliaryWord = st.nextToken().toLowerCase().trim().replaceAll("[^a-z]", "")+"*"; //tutto minuscolo
+                        aggiungiParola = true;                      
+
+                        for(int i = 0; i < preposizioni.length; i++)
+                            if(auxiliaryWord.equals(preposizioni[i]))
+                                aggiungiParola = false;
+
+                        if(!auxiliaryWord.equals("") && aggiungiParola)
+                            words.add(auxiliaryWord);
+
+
+
+                        // PARTE FATTA DA ANDREA
+                        //auxiliaryWord = st.nextToken().toLowerCase().trim().replaceAll("[^a-z]", "")+"*"; //tutto minuscolo                                         
+
+                        /*
                     	 *qui sotto dico: tanto i segni di punteggiatura so sempre in coda alla 
-                    	 */
-                    	if(!auxiliaryWord.equals(""))
-                    		words.add(auxiliaryWord);
+                    	 */                    	
+
+                        //if(!auxiliaryWord.equals(""))
+                    		//words.add(auxiliaryWord);
                      }
 
             }

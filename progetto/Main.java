@@ -3,7 +3,7 @@ public class Main{
     public static void main(String[] args) {
 
         WordParser dict = new WordParser();
-        String path = "./Prova.txt";
+        String path = "./prova.txt";
 
         dict.wordsFromFile(path);
 
