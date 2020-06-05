@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /*
 * ANDREA BALDINELLI
@@ -48,7 +49,8 @@ public class TrieCompressed {
         }
 
     }
-    
+
+
 
     //i figli del nodo n, diventano figli del nodo n1
     //non controllo se ci sono figli per il solo fatto che questo metodo viene invocato QUANDO SO SICURO CHE CI SIANO I BAMBINI DI MEZZO!
@@ -68,6 +70,7 @@ public class TrieCompressed {
     //approccio diverso
     //cerco il primo carattere di un nodo, se nessun nodo rispetta caratteristiche, aggiungo un nodo che è il fratello degli altri
     //se qualcuno soddisfa i requisiti, io controllo sempre quanti sono i caratteri in comune
+    
     public void buildTrie(ArrayList<String> dict){
         final int length = dict.size();
         String stringToAdd;
@@ -90,16 +93,21 @@ public class TrieCompressed {
                     prevAuxNode = auxNode;
                     auxNode = auxNode.getRightSibling();
                 }
-                //ho trovato una corrispondenza
+                //ho trovato una corrispondenza, ho vari scenari
                 else 
                 {
-                    //System.out.println("trovato corrispondenza!");
-                    int k = j; //numero di occorrenze fra prefissi
+
+                    if(stringToAdd.charAt(j) == '*'){
+                        prevAuxNode = auxNode;
+                        break;
+                    }
+                    int k = j; //uso per valutare quante lettere ho in comune fra il nodo auxNOde e la parola da aggiungere 
                     //conto quante occorrenze ho fra le stringhe
                     while(stringAuxNode.charAt(k) == stringToAdd.charAt(k) && k<stringAuxNode.length()-1)
                     {
                         k++;
                     }
+
                     //controllo se la sottostringa ottenuta è più piccola di quella ottenuta precedentemente
                     //se sì devo cambiare indici sottostringa auxNode e devo cambiare 
                     //se non ha figli, la sottostringa associata al nodo è la lunghezza stessa della stringa!
@@ -120,7 +128,8 @@ public class TrieCompressed {
 
                             auxNode = null;
                         }
-                        else //auxNode ha dei figli
+                        else//auxNode ha dei figli, allora vuol dire che la parola la devo aggiungere aqui, ma devo cambiare anche indici auxNode e "i caratteri"
+                            //rimasti fuori 
                         {   
                             findOccurrence = true;
                             Node newAuxNode = new Node(auxNode.getStringIndex(),k,auxNode.getSubstring()[1]);
@@ -128,13 +137,9 @@ public class TrieCompressed {
                             auxNode.setIndex(auxNode.getStringIndex(), auxNode.getSubstring()[0], k);
                             auxNode.setLeftChild(newAuxNode);
                             this.addChild(auxNode, i, k, stringToAdd.length());
-                            //ONLY FOR DEBUG
-                            //this.traverseTree(auxNode);
-                            
+
                             auxNode = null;
                         }
-                        
-
                     }
                     else //if(auxNode.getSubstringLength()<k)//vuol dire che ho trovato una corrispondenza fra i prefissi maggiore, e ciò accade quando ho certamente già dei figli!
                     {
@@ -144,7 +149,7 @@ public class TrieCompressed {
                     }
                 }
             }
-
+            //se sono nel primo caso, oppure ho una parola che non è uguale a nessun altro prefisso ricado in questi due casi!
             if(findOccurrence==false)
                 if(prevAuxNode == this.root)
                     this.addChild(this.root,i, j, stringToAdd.length());
@@ -153,41 +158,49 @@ public class TrieCompressed {
             
         }
 
-    } 
+    }
+    
     
 
 
-    //A MALINCUORE DICO ARRUBBATO DA INTERNET
+
     // visita all'albero
+    //ORA SEMBRA FUNZIONARE EGREGIAMENTE!
     //only debug, sparirà brutalmente
     /*idea:
     * scorro tutti i figli sinistri, al primo figlio mancante vado verso i fratelli dell'ultimo figlio sinistro.
-      poi risalgo!
+      poi risalgo! fino al primo padre avente un fratello destro 
     */
-
     public void traverseTree(Node n){ 
         while(n != null) 
         {   
             if(n.equals(this.root))
                 n = n.getLeftChild();
             else{
-                System.out.print(dict.get(n.getStringIndex()).substring(n.getSubstring()[0],n.getSubstring()[1])+ " "); 
+                System.out.print(dict.get(n.getStringIndex()).substring(n.getSubstring()[0],n.getSubstring()[1])+" "); 
                 if(n.getLeftChild() != null) 
                     n = n.getLeftChild(); 
-                else 
-                    if(n.getRightSibling() != null) 
+                else{
+                    System.out.println("non ho più bimbi"); 
+                    if(n.getRightSibling() != null)
+                    { 
                         n = n.getRightSibling();
-                    
+                    }
                     else //risalgo al primo padre che ha un fratello destro
-                    {   
+                    { 
+                        System.out.println("non ho più fratelli");  
                         n = n.getParent();
-
-                        while(n.getParent() != this.root && n.getRightSibling() == null)
+                        while(n.getRightSibling() == null && n != this.root)
                         {
                             n = n.getParent();
                         }
-                        n = n.getRightSibling();
+                        
+                        if(n.getRightSibling()!= null)
+                            n = n.getRightSibling();
+                        else 
+                            n = null;
                     }
+                }
                 
             }
 
@@ -198,7 +211,6 @@ public class TrieCompressed {
 
 
     //metodo ricerca
-    
     //PER ORA RESTITUISCE LA PRIMA OCCORRENZA DELLA PAROLA, SE PRESENTE
 
     //molto simile a come abbiamo implementato la "creazione di nodi" in un trie
@@ -206,48 +218,69 @@ public class TrieCompressed {
         restituisce l'indice della parola cercata, se presente nel trie 
         restituisce -1 se la parola cercata non c'è!*/
     //nel caso di parole con più occorrenze, dovrei stampare tutte le occorrenze
-
-    public int searchWord(String word)
+    public LinkedList<Integer> searchWord(String word)
     {
+        LinkedList<Integer> res = new LinkedList<>();
         //aggiungo il carattere speciale
         word = word + "*";
         //definisco un nodo ausiliare per cercare all'interno del trie, parto dal figlio sinistro della radice
         Node auxNode = this.root.getLeftChild();
-        //int[] occurrency;
+        Node rightSibling = auxNode.getRightSibling();
         boolean found = false;
+        //mi tiene conto di quante occorrenze ho di quella parola che sto cercando
+        int occurrency = 0;
 
-        int j=0;
-        while( (auxNode != null) && !found )
+        int j= auxNode.getSubstring()[0]; //mi tengo conto dell primo carattere della sottostringa
+        while(auxNode != null && !found)
         {   
             //se il j esimo carattere non combacia, passo tutto ad un eventuale fratello destro di auxNode
-            if(this.dict.get(auxNode.getStringIndex()).charAt(j) != word.charAt(j)){
+            if(this.dict.get(auxNode.getStringIndex()).charAt(j) != word.charAt(j))
+            {
                 auxNode = auxNode.getRightSibling();
             }
             //se il j-esimo carattere combacia, passo al figlio!
-            else if (auxNode.getLeftChild()!= null){
-                j++;
+            else if (auxNode.getLeftChild()!= null)
+            {
                 auxNode = auxNode.getLeftChild();
+                j = auxNode.getSubstring()[0];
             }
-            else{
+            else
+            {
                 //se sono arrivato in un nodo che non ha figli, faccio il controllo che tutti gli altri caratteri rimanenti combacino
                 int k = j;
                 String wordAuxNode = this.dict.get(auxNode.getStringIndex());
-                while(wordAuxNode.charAt(k) == word.charAt(k) && (k<wordAuxNode.length()-1 || k<word.length()-1))
+                while(k<wordAuxNode.length() && k < word.length() && wordAuxNode.charAt(k) == word.charAt(k))
                     {
                         k++;
                     }
-                if(k==word.length())
+                if(k==word.length()){
                     found = true;
+                    //ho trovato un'occorrenza
+                    occurrency++;
+                    res.add(auxNode.getStringIndex());
+                    //cerco se ce ne sono altre
+                    rightSibling = auxNode.getRightSibling();
+                    if(rightSibling!=null)
+                    {
+                        //System.out.print("sono entrato ");
+                        String wordRightSibling = this.dict.get(rightSibling.getStringIndex());
+                        while(rightSibling != null )
+                        {
+                            if(wordRightSibling.charAt(rightSibling.getSubstring()[0]) == '*')
+                                res.add(rightSibling.getStringIndex());
+                            
+                            rightSibling = rightSibling.getRightSibling();
+                        }
+                    }  
+                }
                 else 
-                    auxNode = auxNode.getLeftChild(); //ergo dovrebbe uscire dal ciclo
+                    //ergo dovrebbe uscire dal ciclo
+                    auxNode = auxNode.getLeftChild();
             }
         }
 
         //se sono uscito perchè auxNode è diventato null, ergo non ho trovato la parola desiderata, ergo sono nella merda
-        if(!found)
-            return -1;
-            
-        return  auxNode.getStringIndex() + 1;
+        return res;
 
     }
 

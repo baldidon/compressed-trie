@@ -1,9 +1,7 @@
-public class Main{
+public class MainV2{
 
     public static void main(String[] args) {
 
-        String s = "ciao";
-        System.out.print(s.substring(1,4));
         WordParser dict = new WordParser();
         String path = "./Prova.txt";
 
@@ -11,9 +9,9 @@ public class Main{
 
         System.out.println(dict.toString()+"\n");
 
-        TrieCompressed tc = new TrieCompressed(dict.getList());
+        TrieCompressedV2 tc = new TrieCompressedV2(dict.getList());
         
-        tc.traverseTree(tc.getRoot());
+        tc.traverseTreeV2(tc.getRoot());
         
         for(int i : tc.searchWord("la"))
             System.out.println( "\n"+ i+"\n");
