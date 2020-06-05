@@ -12,8 +12,8 @@ public class Main{
 
         TrieCompressed tc = new TrieCompressed(dict.getList());
         
-        System.out.print(tc.searchWord("m")+"\n");
-        //tc.traverseTree(tc.getRoot());
+        System.out.print(tc.searchWord("intervalli")+"\n");
+        tc.traverseTree(tc.getRoot());
         //System.out.println("\n");
         
     }

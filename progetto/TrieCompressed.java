@@ -96,7 +96,7 @@ public class TrieCompressed {
                     //System.out.println("trovato corrispondenza!");
                     int k = j; //numero di occorrenze fra prefissi
                     //conto quante occorrenze ho fra le stringhe
-                    while(stringAuxNode.charAt(k) == stringToAdd.charAt(k) && k<stringToAdd.length()-1)
+                    while(stringAuxNode.charAt(k) == stringToAdd.charAt(k) && k<stringAuxNode.length()-1)
                     {
                         k++;
                     }
@@ -169,7 +169,6 @@ public class TrieCompressed {
         while(n != null) 
         {   
             if(n.equals(this.root))
-            //se sono la radice, passo subito al primo figlio!
                 n = n.getLeftChild();
             else{
                 System.out.print(dict.get(n.getStringIndex()).substring(n.getSubstring()[0],n.getSubstring()[1])+ " "); 
@@ -179,23 +178,22 @@ public class TrieCompressed {
                     if(n.getRightSibling() != null) 
                         n = n.getRightSibling();
                     
-                
-                    else if(n.getParent().getRightSibling() != null) {
-                        n = n.getParent().getRightSibling();
-                        //System.out.print("\n");
-                    }
-                    else if((n.getParent() != this.root) && (n.getParent().getParent().getRightSibling()!= null)){
-                        n = n.getParent().getParent().getRightSibling();
-                    }
-                           
-                    else {
-                        return;
+                    else //risalgo al primo padre che ha un fratello destro
+                    {   
+                        n = n.getParent();
+
+                        while(n.getParent() != this.root && n.getRightSibling() == null)
+                        {
+                            n = n.getParent();
+                        }
+                        n = n.getRightSibling();
                     }
                 
             }
 
         } 
     } 
+
 
 
 
@@ -231,7 +229,17 @@ public class TrieCompressed {
                 auxNode = auxNode.getLeftChild();
             }
             else{
-                found = true;
+                //se sono arrivato in un nodo che non ha figli, faccio il controllo che tutti gli altri caratteri rimanenti combacino
+                int k = j;
+                String wordAuxNode = this.dict.get(auxNode.getStringIndex());
+                while(wordAuxNode.charAt(k) == word.charAt(k) && (k<wordAuxNode.length()-1 || k<word.length()-1))
+                    {
+                        k++;
+                    }
+                if(k==word.length())
+                    found = true;
+                else 
+                    auxNode = auxNode.getLeftChild(); //ergo dovrebbe uscire dal ciclo
             }
         }
 
@@ -243,38 +251,4 @@ public class TrieCompressed {
 
     }
 
-
-/*
-
-    /*metodo privato per la ricorsione
-	private Node RecursiveSearch(String s, Node node){
-		if(node != null){
-			 if(node.getInfo().equals(s))
-				 return node;
-			 else {
-				 Node nodeLeft = this.RecursiveSearch(s,node.getLeft());
-				 if(nodeLeft != null)
-					 return nodeLeft;
-				 
-				 Node nodeRight = this.RecursiveSearch(s,node.getRight());
-				 if(nodeRight != null)
-					 return nodeRight;
-			 }
-		}
-		return null;
-    }
-    
-
-    /*
-     Restituisce il nodo il cui dato associato è info, o null se tale nodod non esiste 
-	public String search(String s) {
-        /*dobbiamo visitare l'albero!
-        Node res = this.RecursiveSearch(s, this.root);
-
-        if(res != null)
-            return this.dict.get(res.index[0]);
-        else 
-            return "";
-	}
-*/
 }
