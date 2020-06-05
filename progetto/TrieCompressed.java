@@ -12,7 +12,7 @@ public class TrieCompressed {
     // costruttore, passo per parametro il dizionario e quando istanzio oggetto, lo
     // "riempo" subito!
     public TrieCompressed(final ArrayList<String> dict) {
-        this.root = new Node(0, 0, 0);
+        this.root = new Node(-1, -1, -1);
         this.dict = dict;
         this.buildTrie(this.dict);
     }
@@ -93,7 +93,7 @@ public class TrieCompressed {
                 //ho trovato una corrispondenza
                 else 
                 {
-                    System.out.println("trovato corrispondenza!");
+                    //System.out.println("trovato corrispondenza!");
                     int k = j; //numero di occorrenze fra prefissi
                     //conto quante occorrenze ho fra le stringhe
                     while(stringAuxNode.charAt(k) == stringToAdd.charAt(k) && k<stringToAdd.length()-1)
@@ -157,8 +157,6 @@ public class TrieCompressed {
     
 
 
-
-
     //A MALINCUORE DICO ARRUBBATO DA INTERNET
     // visita all'albero
     //only debug, sparirà brutalmente
@@ -201,28 +199,30 @@ public class TrieCompressed {
 
 
 
-
-
-
     //metodo ricerca
+    
+    //PER ORA RESTITUISCE LA PRIMA OCCORRENZA DELLA PAROLA, SE PRESENTE
+
     //molto simile a come abbiamo implementato la "creazione di nodi" in un trie
     /*questo metodo:
         restituisce l'indice della parola cercata, se presente nel trie 
         restituisce -1 se la parola cercata non c'è!*/
-    
-    //WORK IN PROGRESS
-    public int searchWord(String s)
-    {
-        s = s + "*";
-        //definisco un nodo ausiliare per cercare all'interno del trie
-        Node auxNode = this.root.getLeftChild();
-        boolean found = true;
-        int j=0;
-        while(auxNode!= null && !found)
-        {   
+    //nel caso di parole con più occorrenze, dovrei stampare tutte le occorrenze
 
+    public int searchWord(String word)
+    {
+        //aggiungo il carattere speciale
+        word = word + "*";
+        //definisco un nodo ausiliare per cercare all'interno del trie, parto dal figlio sinistro della radice
+        Node auxNode = this.root.getLeftChild();
+        //int[] occurrency;
+        boolean found = false;
+
+        int j=0;
+        while( (auxNode != null) && !found )
+        {   
             //se il j esimo carattere non combacia, passo tutto ad un eventuale fratello destro di auxNode
-            if(this.dict.get(auxNode.getStringIndex()).charAt(j) != s.charAt(j)){
+            if(this.dict.get(auxNode.getStringIndex()).charAt(j) != word.charAt(j)){
                 auxNode = auxNode.getRightSibling();
             }
             //se il j-esimo carattere combacia, passo al figlio!
@@ -234,8 +234,12 @@ public class TrieCompressed {
                 found = true;
             }
         }
-        return auxNode.getStringIndex();
 
+        //se sono uscito perchè auxNode è diventato null, ergo non ho trovato la parola desiderata, ergo sono nella merda
+        if(!found)
+            return -1;
+            
+        return  auxNode.getStringIndex() + 1;
 
     }
 

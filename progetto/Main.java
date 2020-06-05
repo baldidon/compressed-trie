@@ -12,9 +12,9 @@ public class Main{
 
         TrieCompressed tc = new TrieCompressed(dict.getList());
         
-        //System.out.print(tc.searchWord("a"));
-        tc.traverseTree(tc.getRoot());
-        System.out.println("\n");
+        System.out.print(tc.searchWord("m")+"\n");
+        //tc.traverseTree(tc.getRoot());
+        //System.out.println("\n");
         
     }
 }
