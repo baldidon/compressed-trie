@@ -13,13 +13,16 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.StringTokenizer;
+import java.text.Normalizer;
 
 
 public class WordParser {
 
     private ArrayList<String> words = null;
 
-    private String[] preposizioni = {"di*", "a*", "da*", "in*", "con*", "su*", "per*", "tra*", "fra*"};
+    //vengono escluse le stopWord
+    private String[] stopWord = {"di*", "a*", "da*", "in*", "con*", "su*", "per*", "tra*", "fra*",
+                                    "il*", "lo*", "la*", "i*", "gli*", "le*", "un*", "uno*", "una*", "e*", "o*"};
 
     private boolean aggiungiParola; //variabile utilizzata per capire se la parola è ammessa
 
@@ -37,13 +40,22 @@ public class WordParser {
 
             while ((auxiliaryBuffer = importFile.readLine()) != null /*&& (!auxiliaryBuffer.isEmpty())*/) {
             		st = new StringTokenizer(auxiliaryBuffer);
-                    while (st.hasMoreTokens()) { //finchè ho parole nella frase                  
-                                         
-                        auxiliaryWord = st.nextToken().toLowerCase().trim().replaceAll("[^a-z]", "")+"*"; //tutto minuscolo
+                    while (st.hasMoreTokens()) { //finchè ho parole nella frase
+
+                        auxiliaryWord = st.nextToken();
+
+                        auxiliaryWord = normalizedString(auxiliaryWord);                        
+
+                        //auxiliaryWord = Normalizer.normalize(auxiliaryWord, Normalizer.Form.NFD);                                  
+                        //auxiliaryWord = auxiliaryWord.toLowerCase().trim().replaceAll("[^a-z]", "")+"*"; //tutto minuscolo
+                        
                         aggiungiParola = true;                      
 
-                        for(int i = 0; i < preposizioni.length; i++)
-                            if(auxiliaryWord.equals(preposizioni[i]))
+                        if(auxiliaryWord.length() < 2) //le parole di una sola lettera non sono ammesse
+                            aggiungiParola = false;
+
+                        for(int i = 0; i < stopWord.length; i++)
+                            if(auxiliaryWord.equals(stopWord[i]))
                                 aggiungiParola = false;
 
                         if(!auxiliaryWord.equals("") && aggiungiParola)
@@ -87,5 +99,14 @@ public class WordParser {
         }
         return s;
     }
+
+    // 'ripulisce' la stringa dai caratteri speciali
+    public String normalizedString(String normalizedString){ 
+
+        normalizedString = Normalizer.normalize(normalizedString, Normalizer.Form.NFD);
+        return normalizedString = normalizedString.toLowerCase().trim().replaceAll("[^a-z]", "")+"*";
+
+    }
+    
 
 }
