@@ -39,19 +39,25 @@ public class WordParser {
             BufferedReader importFile = Files.newBufferedReader(Paths.get(pathToFile)); //da Grilli preso 
 
             while ((auxiliaryBuffer = importFile.readLine()) != null /*&& (!auxiliaryBuffer.isEmpty())*/) {
-            		st = new StringTokenizer(auxiliaryBuffer);
+            		
+                    auxiliaryBuffer = auxiliaryBuffer.replaceAll("'", " "); //sostituisce gli apostrofi con lo spazio
+
+                    System.out.println(auxiliaryBuffer);
+                    
+                    st = new StringTokenizer(auxiliaryBuffer);
+
                     while (st.hasMoreTokens()) { //finchè ho parole nella frase
 
-                        auxiliaryWord = st.nextToken();
-
-                        auxiliaryWord = normalizedString(auxiliaryWord);                        
+                        auxiliaryWord = st.nextToken();                     
+                        
+                        auxiliaryWord = normalizedString(auxiliaryWord);  
 
                         //auxiliaryWord = Normalizer.normalize(auxiliaryWord, Normalizer.Form.NFD);                                  
                         //auxiliaryWord = auxiliaryWord.toLowerCase().trim().replaceAll("[^a-z]", "")+"*"; //tutto minuscolo
                         
                         aggiungiParola = true;                      
 
-                        if(auxiliaryWord.length() < 2) //le parole di una sola lettera non sono ammesse
+                        if(auxiliaryWord.length() < 3) //le parole di una sola lettera non sono ammesse, considero anche '*'
                             aggiungiParola = false;
 
                         for(int i = 0; i < stopWord.length; i++)
@@ -103,8 +109,8 @@ public class WordParser {
     // 'ripulisce' la stringa dai caratteri speciali
     public String normalizedString(String normalizedString){ 
 
-        normalizedString = Normalizer.normalize(normalizedString, Normalizer.Form.NFD);        
-        return normalizedString = normalizedString.toLowerCase().trim().replaceAll("[^a-z]", "")+"*";
+        normalizedString = Normalizer.normalize(normalizedString, Normalizer.Form.NFD); //rimuove lettere accentate
+        return normalizedString = normalizedString.toLowerCase().trim().replaceAll("[^a-z]", "")+"*"; // rimuove tutti i caratteri non compresi fra a-z
 
     }
     
