@@ -10,8 +10,7 @@ public class Main{
         System.out.println(dict.toString()+"\n");
 
         TrieCompressed tc = new TrieCompressed(dict.getList());
-        tc.traverseTree(tc.getRoot());
-        
+        tc.traverseTree(tc.getRoot());        
 
     }
 }

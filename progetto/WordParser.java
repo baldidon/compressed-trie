@@ -103,7 +103,7 @@ public class WordParser {
     // 'ripulisce' la stringa dai caratteri speciali
     public String normalizedString(String normalizedString){ 
 
-        normalizedString = Normalizer.normalize(normalizedString, Normalizer.Form.NFD);
+        normalizedString = Normalizer.normalize(normalizedString, Normalizer.Form.NFD);        
         return normalizedString = normalizedString.toLowerCase().trim().replaceAll("[^a-z]", "")+"*";
 
     }
