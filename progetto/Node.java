@@ -1,3 +1,5 @@
+import java.util.LinkedList;
+
 public class Node{
 
 	public int[] index;
@@ -5,6 +7,7 @@ public class Node{
 	public Node parent;
 	public Node leftChild;
 	public Node rightSibling;
+	private LinkedList<Integer> occurrency; //lista in cui salvo le occorrenze!
 
 	public boolean isLeaf;
 
@@ -18,6 +21,7 @@ public class Node{
 		this.parent = null;
 		this.leftChild = null;
 		this.rightSibling = null;
+		this.occurrency = null;
 
 		this.isLeaf = false;
 
@@ -70,6 +74,25 @@ public class Node{
 
 	public int getSubstringLength(){
 		return index[2] - index[1];
+	}
+
+	public void createListOfOccurrency(){
+		this.occurrency = new LinkedList<>();
+	}
+
+	public LinkedList<Integer> getListOfOccurrency(){
+		return this.occurrency;
+	}
+	public int numOfOccurrency(){
+		return this.occurrency.size();
+	}
+
+	public void addOccurrency(int i){
+		this.occurrency.addLast(i);
+	}
+
+	public boolean hasOccurrency(){
+		return !this.occurrency.isEmpty();
 	}
 
 }

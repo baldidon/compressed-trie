@@ -101,8 +101,13 @@ public class TrieCompressedV2 {
             if(j>=stringToAdd.length())
             {
                 j--;
-                auxNode = new Node(i,j,j);
-                this.addChildV2(prevAuxNode.getParent(), auxNode);
+                //auxNode = new Node(i,j,j);
+                //this.addChildV2(prevAuxNode.getParent(), auxNode);
+                //il nodo asterisco avrà tutte le occorrenze aggiuntive di quella parola!
+                if(prevAuxNode.getListOfOccurrency() == null)
+                    prevAuxNode.createListOfOccurrency();
+
+                prevAuxNode.addOccurrency(i);
             }
             else
             {
@@ -239,26 +244,27 @@ public class TrieCompressedV2 {
     //nel caso di parole con più occorrenze, dovrei stampare tutte le occorrenze
     public LinkedList<Integer> searchWord(String word)
     {
-        LinkedList<Integer> res = new LinkedList<>();
+        LinkedList<Integer> res = new LinkedList<>();//lista (perchè non so a priori quante occorrenze ho!)
         //aggiungo il carattere speciale
         word = word + "*";
+        String wordOfNode;
         //definisco un nodo ausiliare per cercare all'interno del trie, parto dal figlio sinistro della radice
         Node auxNode = this.root.getLeftChild();
-        Node rightSibling = auxNode.getRightSibling();
         boolean found = false;
 
 
-        int j= auxNode.getSubstring()[0]; //mi tengo conto dell primo carattere della sottostringa
+        int j= 0; //mi tengo conto dell primo carattere della sottostringa
         while(auxNode != null && !found)
         {   
+            wordOfNode = this.dict.get(auxNode.getStringIndex());
             //se il j esimo carattere non combacia, passo tutto ad un eventuale fratello destro di auxNode
-            if(this.dict.get(auxNode.getStringIndex()).charAt(j) != word.charAt(j))
+            if(wordOfNode.charAt(j) != word.charAt(j))
             {
                 auxNode = auxNode.getRightSibling();
             }
+
             //se il j-esimo carattere combacia, passo al figlio!
-            else if (auxNode.getLeftChild()!= null)
-            {
+            else if (auxNode.getLeftChild()!= null){
                 auxNode = auxNode.getLeftChild();
                 j = auxNode.getSubstring()[0];
             }
@@ -267,28 +273,27 @@ public class TrieCompressedV2 {
                 //se sono arrivato in un nodo che non ha figli, faccio il controllo che tutti gli altri caratteri rimanenti combacino
                 int k = j;
                 String wordAuxNode = this.dict.get(auxNode.getStringIndex());
-                while(k<wordAuxNode.length() && k < word.length() && wordAuxNode.charAt(k) == word.charAt(k))
+
+                while(k<wordAuxNode.length() && k<word.length() &&  wordAuxNode.charAt(k) == word.charAt(k))
                     {
                         k++;
                     }
+                
                 if(k==word.length()){
                     found = true;
                     //ho trovato un'occorrenza
                     res.add(auxNode.getStringIndex());
                     //cerco se ce ne sono altre
-                    rightSibling = auxNode.getRightSibling();
-                    if(rightSibling!=null)
-                    {
-                        //System.out.print("sono entrato ");
-                        String wordRightSibling = this.dict.get(rightSibling.getStringIndex());
-                        while(rightSibling != null )
+                    if(auxNode.getListOfOccurrency()!=null && auxNode.hasOccurrency())
+                    {   
+                        System.out.println("ci sono occorrenze");
+                        for(int i: auxNode.getListOfOccurrency())
                         {
-                            if(wordRightSibling.charAt(rightSibling.getSubstring()[0]) == '*')
-                                res.add(rightSibling.getStringIndex());
-                            
-                            rightSibling = rightSibling.getRightSibling();
+                            System.out.println("occorrenza beccata");
+                            res.addLast(i);
                         }
-                    }  
+                    }
+
                 }
                 else 
                     //ergo dovrebbe uscire dal ciclo
