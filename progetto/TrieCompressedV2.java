@@ -204,13 +204,13 @@ public class TrieCompressedV2 {
                 if(n.getLeftChild() != null)
                 { 
                     n = n.getLeftChild();
-                    //System.out.println("passo al figlm");
+                    System.out.println("\n");
                 }
                 else{ 
                     if(n.getRightSibling() != null)
                     { 
                         n = n.getRightSibling();
-                        //System.out.println("passo al fratm");
+                        System.out.println("\n");
                     }
                     else //risalgo al primo padre che ha un fratello destro
                     { 
@@ -306,6 +306,98 @@ public class TrieCompressedV2 {
 
     }
 
+    //metodo che restituisce true se la parola è presente all'interno dell trie; altrimenti false
+    public boolean isPresent(String word)
+    {
+        word = word + "*";
+        String wordOfNode;
+        //definisco un nodo ausiliare per cercare all'interno del trie, parto dal figlio sinistro della radice
+        Node auxNode = this.root.getLeftChild();
+        boolean found = false;
+
+
+        int j= 0; //mi tengo conto dell primo carattere della sottostringa
+        while(auxNode != null && !found)
+        {   
+            wordOfNode = this.dict.get(auxNode.getStringIndex());
+            //se il j esimo carattere non combacia, passo tutto ad un eventuale fratello destro di auxNode
+            if(wordOfNode.charAt(j) != word.charAt(j))
+            {
+                auxNode = auxNode.getRightSibling();
+            }
+
+            //se il j-esimo carattere combacia, passo al figlio!
+            else if (auxNode.getLeftChild()!= null)
+            {
+                auxNode = auxNode.getLeftChild();
+                j = auxNode.getSubstring()[0];
+            }
+            else
+            {
+                //se sono arrivato in un nodo che non ha figli, faccio il controllo che tutti gli altri caratteri rimanenti combacino
+                int k = j;
+                String wordAuxNode = this.dict.get(auxNode.getStringIndex());
+
+                while(k<wordAuxNode.length() && k<word.length() &&  wordAuxNode.charAt(k) == word.charAt(k))
+                    k++;
+                
+                if(k==word.length())
+                    found = true;
+                else 
+                    //ergo dovrebbe uscire dal ciclo
+                    auxNode = auxNode.getLeftChild();
+            }
+        }
+
+        //se sono uscito perchè auxNode è diventato null, ergo non ho trovato la parola desiderata, ergo sono nella merda
+        return found;
+    }
+    //restituisce il numero di occorrenze(dim lista se istanziata +1) della parola. Se la parola non è presente restituisce -1
+    public int numOfOccurrency(String word)
+    {
+        word = word + "*";
+        String wordOfNode;
+        //definisco un nodo ausiliare per cercare all'interno del trie, parto dal figlio sinistro della radice
+        Node auxNode = this.root.getLeftChild();
+        boolean found = false;
+        int occurrencies = -1;
+
+        int j= 0; //mi tengo conto dell primo carattere della sottostringa
+        while(auxNode != null && !found)
+        {   
+            wordOfNode = this.dict.get(auxNode.getStringIndex());
+            //se il j esimo carattere non combacia, passo tutto ad un eventuale fratello destro di auxNode
+            if(wordOfNode.charAt(j) != word.charAt(j))
+            {
+                auxNode = auxNode.getRightSibling();
+            }
+
+            //se il j-esimo carattere combacia, passo al figlio!
+            else if (auxNode.getLeftChild()!= null)
+            {
+                auxNode = auxNode.getLeftChild();
+                j = auxNode.getSubstring()[0];
+            }
+            else
+            {
+                //se sono arrivato in un nodo che non ha figli, faccio il controllo che tutti gli altri caratteri rimanenti combacino
+                int k = j;
+                String wordAuxNode = this.dict.get(auxNode.getStringIndex());
+
+                while(k<wordAuxNode.length() && k<word.length() &&  wordAuxNode.charAt(k) == word.charAt(k))
+                    k++;
+                
+                if(k==word.length()){
+                    found = true;
+                    occurrencies = auxNode.numOfOccurrency() + 1;
+                }
+                else 
+                    //ergo dovrebbe uscire dal ciclo
+                    auxNode = auxNode.getLeftChild();
+            }
+        }
+        return occurrencies;
+    }
 
 
 }
