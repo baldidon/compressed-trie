@@ -11,4 +11,6 @@ wordsFromFile Θ(n*m) n è il numero di righe e m è il numero di parole su una 
 -costruire Trie
 Σm (con i che va da zero a n-1). m è la lunghezza della parola più lunga e n sono le parole. Quindi ottengo O(m*n) ed essendo m costante è O(n)
 
+quando faccio swapNode il caso peggiore è quando n1 ha come primo carattere 'z' e quindi vengono prima tutti gli altri caratteri dell'alfabeto, cioè n1 è l'ultimo fratello. Vale lo stesso discorso per la ricerca poichè devo scandagliare tutti i figli della radice fino ad arrivare all'ultimo
+
 -costruire CompressedTrie
