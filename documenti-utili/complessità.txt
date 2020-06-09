@@ -1,0 +1,14 @@
+Analisi di complessità
+
+- ricerca (n = lunghezza della stringa da cercare)
+searchWord O(n)
+numOfOccurency O(n)
+isPresent O(n)
+
+- setacciare parole 
+wordsFromFile Θ(n*m) n è il numero di righe e m è il numero di parole su una riga
+
+-costruire Trie
+Σm (con i che va da zero a n-1). m è la lunghezza della parola più lunga e n sono le parole. Quindi ottengo O(m*n) ed essendo m costante è O(n)
+
+- costruire CompressedTrie
