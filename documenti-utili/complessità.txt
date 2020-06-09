@@ -1,16 +1,20 @@
 Analisi di complessità
 
+
 - ricerca (n = lunghezza della stringa da cercare)
 searchWord O(n)
 numOfOccurency O(n)
 isPresent O(n)
 
 - setacciare parole 
-wordsFromFile Θ(n*m) n è il numero di righe e m è il numero di parole su una riga
+wordsFromFile Θ(n*m) n è il numero di righe e m è il numero di parole su una riga (teta o O?)
 
 -costruire Trie
 Σm (con i che va da zero a n-1). m è la lunghezza della parola più lunga e n sono le parole. Quindi ottengo O(m*n) ed essendo m costante è O(n)
 
-quando faccio swapNode il caso peggiore è quando n1 ha come primo carattere 'z' e quindi vengono prima tutti gli altri caratteri dell'alfabeto, cioè n1 è l'ultimo fratello. Vale lo stesso discorso per la ricerca poichè devo scandagliare tutti i figli della radice fino ad arrivare all'ultimo
+quando faccio swapNode il caso peggiore è quando n1 ha come primo carattere 'z' e quindi vengono prima tutti gli altri caratteri
+dell'alfabeto, cioè n1 è l'ultimo fratello. Vale lo stesso discorso per la ricerca poichè devo scandagliare tutti i figli della radice
+fino ad arrivare all'ultimo.
 
 -costruire CompressedTrie
+in teoria è sempre O(n*m) dove n il numero delle parole ed m il numero di caratteri della stringa più lunga. 
