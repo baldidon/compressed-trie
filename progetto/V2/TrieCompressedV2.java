@@ -25,6 +25,7 @@ public class TrieCompressedV2 {
         return this.root;
     }
 
+
     public void addChildV2(Node parentNode, Node newNode)
     {
         newNode.setParent(parentNode);
@@ -44,7 +45,8 @@ public class TrieCompressedV2 {
         }
 
     }
-    //
+
+    //metto n2 al posto di n1
     public void swapNodeV2(Node n1, Node n2)
     {   
         n2.setParent(n1.getParent());
@@ -95,18 +97,15 @@ public class TrieCompressedV2 {
                     auxNode = auxNode.getLeftChild();
                     j++;
                 }
-
             }
-
             if(j>=stringToAdd.length())
             {
-                j--;
+                //j--;
                 //auxNode = new Node(i,j,j);
                 //this.addChildV2(prevAuxNode.getParent(), auxNode);
                 //il nodo asterisco avrà tutte le occorrenze aggiuntive di quella parola!
                 if(prevAuxNode.getListOfOccurrency() == null)
                     prevAuxNode.createListOfOccurrency();
-
                 prevAuxNode.addOccurrency(i);
             }
             else
@@ -123,9 +122,7 @@ public class TrieCompressedV2 {
                     j++;
                 }
             }
-
         }
-
         //costruito il trie, comprimo!
         this.compressedTrie();
     }
@@ -146,29 +143,30 @@ public class TrieCompressedV2 {
                 if(lengthPath > 0)//altrimenti non posso far nulla
                 {
                     lastNode.setIndex(lastNode.getStringIndex(), firstNode.getSubstring()[0], lastNode.getSubstring()[1]);
+                    //metto lastNode al posto di first node
                     this.swapNodeV2(firstNode, lastNode);
                 }
-                
                 if(lastNode.getLeftChild()!= null)//vado oltre se posso andare oltre
                 {
-                    firstNode = firstNode.getLeftChild();
+                    firstNode = lastNode.getLeftChild();
                     lastNode = firstNode;
                     lengthPath = 0;
                 }
-                else if(firstNode.getRightSibling()!= null)//vado al fratello di first node
+                else if(lastNode.getRightSibling()!= null)//vado al fratello di first node
                 {
-                    firstNode = firstNode.getRightSibling();
+                    firstNode = lastNode.getRightSibling();
                     lastNode = firstNode;
                     lengthPath = 0;
                 }
                 else //risalgo al primo nodo con un fratello
                 { 
-                    firstNode = firstNode.getParent();
+                    firstNode = lastNode.getParent();
                     while(firstNode.getRightSibling() == null && firstNode != this.root)
                     {
+                        //System.out.println("sono entrato nel while!");
                         firstNode = firstNode.getParent();
                     }
-                    
+                    //System.out.println("\n");
                     if(firstNode.getRightSibling()!= null)
                     {
                         firstNode = firstNode.getRightSibling();
@@ -204,13 +202,13 @@ public class TrieCompressedV2 {
                 if(n.getLeftChild() != null)
                 { 
                     n = n.getLeftChild();
-                    System.out.println("\n");
+                    //System.out.println("\n");
                 }
                 else{ 
                     if(n.getRightSibling() != null)
                     { 
                         n = n.getRightSibling();
-                        System.out.println("\n");
+                        //System.out.println("\n");
                     }
                     else //risalgo al primo padre che ha un fratello destro
                     { 
@@ -264,10 +262,12 @@ public class TrieCompressedV2 {
             }
 
             //se il j-esimo carattere combacia, passo al figlio!
-            else if (auxNode.getLeftChild()!= null){
+            else if (auxNode.getLeftChild()!= null)
+            {
                 auxNode = auxNode.getLeftChild();
                 j = auxNode.getSubstring()[0];
             }
+
             else
             {
                 //se sono arrivato in un nodo che non ha figli, faccio il controllo che tutti gli altri caratteri rimanenti combacino
@@ -286,12 +286,8 @@ public class TrieCompressedV2 {
                     //cerco se ce ne sono altre
                     if(auxNode.getListOfOccurrency()!=null && auxNode.hasOccurrency())
                     {   
-                        System.out.println("ci sono occorrenze");
-                        for(int i: auxNode.getListOfOccurrency())
-                        {
-                            System.out.println("occorrenza beccata");
-                            res.addLast(i);
-                        }
+                        for (int i : auxNode.getListOfOccurrency())
+                            res.add(i);
                     }
 
                 }
@@ -385,8 +381,9 @@ public class TrieCompressedV2 {
                 String wordAuxNode = this.dict.get(auxNode.getStringIndex());
 
                 while(k<wordAuxNode.length() && k<word.length() &&  wordAuxNode.charAt(k) == word.charAt(k))
+                {
                     k++;
-                
+                }
                 if(k==word.length()){
                     found = true;
                     occurrencies = auxNode.numOfOccurrency() + 1;

@@ -75,6 +75,8 @@ public class TrieCompressed {
         final int length = dict.size();
         String stringToAdd;
         String stringAuxNode;
+
+        //scandisco tutte le parole
         for(int i=0; i<length; i++){
             stringToAdd = dict.get(i);
             //variabile che uso per verificare se ho trovato o meno un'occorrenza fra le parol
@@ -83,12 +85,13 @@ public class TrieCompressed {
             //tengo il riferimento a prevAuxNode solo perchè, quando auxNode è null, ho il riferimento dell'ultimo nodo non nullo a cui attacco il "nodo da aggiungere"
             Node prevAuxNode = this.root;
             //per "visitare ogni nodo dell'albero     
-            int j=0;//indice che uso per scorrere i caratteri ugyali
+            int j=0;//indice che uso per scorrere i caratteri uguali
             //itero fra i nodi
             while(auxNode != null){
                 //se non trovo un nodo al livello j con la coincidenza di carattere desiderata, scorro al fratello
                 stringAuxNode = dict.get(auxNode.getStringIndex());
-                
+
+                //caso peggiore il nodo ha tanti fratelli quanti i caratteri dell'alfabeto!
                 if(stringAuxNode.charAt(j) != stringToAdd.charAt(j)){
                     prevAuxNode = auxNode;
                     auxNode = auxNode.getRightSibling();
@@ -96,18 +99,14 @@ public class TrieCompressed {
                 //ho trovato una corrispondenza, ho vari scenari
                 else 
                 {
-
-                    if(stringToAdd.charAt(j) == '*'){
-                        prevAuxNode = auxNode;
-                        break;
-                    }
-                    int k = j; //uso per valutare quante lettere ho in comune fra il nodo auxNOde e la parola da aggiungere 
+                    int k = j; //uso per valutare quante lettere ho in comune fra il nodo auxNode e la parola da aggiungere 
                     //conto quante occorrenze ho fra le stringhe
-                    while(stringAuxNode.charAt(k) == stringToAdd.charAt(k) && k<stringAuxNode.length()-1)
+                    while(k<stringToAdd.length() && k<stringAuxNode.length() && stringAuxNode.charAt(k) == stringToAdd.charAt(k) )
                     {
                         k++;
                     }
-
+                    
+                    
                     //controllo se la sottostringa ottenuta è più piccola di quella ottenuta precedentemente
                     //se sì devo cambiare indici sottostringa auxNode e devo cambiare 
                     //se non ha figli, la sottostringa associata al nodo è la lunghezza stessa della stringa!
@@ -119,24 +118,35 @@ public class TrieCompressed {
                         //se trovo questa relazione, so per certo che la parola viene agganciata a tale nodo!
                         if(auxNode.getLeftChild()==null)
                         {
-                            //ho trovato dove mettere la parola!
-                            findOccurrence = true;
-                            //se il nodo "incriminato non ha figli" cambio gli indici al nodo e gli affibbio due nuovi figli!
-                            auxNode.setIndex(auxNode.getStringIndex(), auxNode.getSubstring()[0],k);
-                            this.addChild(auxNode, auxNode.getStringIndex(), k, stringAuxNode.length());
-                            this.addChild(auxNode, i, k, stringToAdd.length());
 
+                            if(k == stringToAdd.length())
+                            {
+                                if(prevAuxNode.getListOfOccurrency() == null)
+                                    prevAuxNode.createListOfOccurrency();
+                                prevAuxNode.addOccurrency(i);
+                                System.out.print("okay!");
+                                findOccurrence = true;
+                            }
+                            else
+                            {
+                                //ho trovato dove mettere la parola!
+                                findOccurrence = true;
+                                //se il nodo "incriminato non ha figli" cambio gli indici al nodo e gli affibbio due nuovi figli!
+                                auxNode.setIndex(auxNode.getStringIndex(), auxNode.getSubstring()[0],k-1);
+                                this.addChild(auxNode, auxNode.getStringIndex(), k-1, stringAuxNode.length()-1);
+                                this.addChild(auxNode, i, k-1, stringToAdd.length()-1);
+                            }
                             auxNode = null;
                         }
                         else//auxNode ha dei figli, allora vuol dire che la parola la devo aggiungere aqui, ma devo cambiare anche indici auxNode e "i caratteri"
                             //rimasti fuori 
                         {   
                             findOccurrence = true;
-                            Node newAuxNode = new Node(auxNode.getStringIndex(),k,auxNode.getSubstring()[1]);
+                            Node newAuxNode = new Node(auxNode.getStringIndex(),k-1,auxNode.getSubstring()[1]);
                             this.swapChildren(auxNode, newAuxNode);
-                            auxNode.setIndex(auxNode.getStringIndex(), auxNode.getSubstring()[0], k);
+                            auxNode.setIndex(auxNode.getStringIndex(), auxNode.getSubstring()[0], k-1);
                             auxNode.setLeftChild(newAuxNode);
-                            this.addChild(auxNode, i, k, stringToAdd.length());
+                            this.addChild(auxNode, i, k-1, stringToAdd.length()-1);
 
                             auxNode = null;
                         }
@@ -152,9 +162,9 @@ public class TrieCompressed {
             //se sono nel primo caso, oppure ho una parola che non è uguale a nessun altro prefisso ricado in questi due casi!
             if(findOccurrence==false)
                 if(prevAuxNode == this.root)
-                    this.addChild(this.root,i, j, stringToAdd.length());
+                    this.addChild(this.root,i, j, stringToAdd.length()-1);
                 else
-                    this.addChild(prevAuxNode.getParent(),i,j,stringToAdd.length());
+                    this.addChild(prevAuxNode.getParent(),i,j,stringToAdd.length()-1);
             
         }
 
@@ -177,18 +187,16 @@ public class TrieCompressed {
             if(n.equals(this.root))
                 n = n.getLeftChild();
             else{
-                System.out.print(dict.get(n.getStringIndex()).substring(n.getSubstring()[0],n.getSubstring()[1])+" "); 
+                System.out.print(dict.get(n.getStringIndex()).substring(n.getSubstring()[0],n.getSubstring()[1]+1)+" "); 
                 if(n.getLeftChild() != null) 
                     n = n.getLeftChild(); 
                 else{
-                    System.out.println("non ho più bimbi"); 
                     if(n.getRightSibling() != null)
                     { 
                         n = n.getRightSibling();
                     }
                     else //risalgo al primo padre che ha un fratello destro
                     { 
-                        System.out.println("non ho più fratelli");  
                         n = n.getParent();
                         while(n.getRightSibling() == null && n != this.root)
                         {
@@ -210,78 +218,5 @@ public class TrieCompressed {
 
 
 
-    //metodo ricerca
-    //PER ORA RESTITUISCE LA PRIMA OCCORRENZA DELLA PAROLA, SE PRESENTE
-
-    //molto simile a come abbiamo implementato la "creazione di nodi" in un trie
-    /*questo metodo:
-        restituisce l'indice della parola cercata, se presente nel trie 
-        restituisce -1 se la parola cercata non c'è!*/
-    //nel caso di parole con più occorrenze, dovrei stampare tutte le occorrenze
-    public LinkedList<Integer> searchWord(String word)
-    {
-        LinkedList<Integer> res = new LinkedList<>();
-        //aggiungo il carattere speciale
-        word = word + "*";
-        //definisco un nodo ausiliare per cercare all'interno del trie, parto dal figlio sinistro della radice
-        Node auxNode = this.root.getLeftChild();
-        Node rightSibling = auxNode.getRightSibling();
-        boolean found = false;
-        //mi tiene conto di quante occorrenze ho di quella parola che sto cercando
-        int occurrency = 0;
-
-        int j= auxNode.getSubstring()[0]; //mi tengo conto dell primo carattere della sottostringa
-        while(auxNode != null && !found)
-        {   
-            //se il j esimo carattere non combacia, passo tutto ad un eventuale fratello destro di auxNode
-            if(this.dict.get(auxNode.getStringIndex()).charAt(j) != word.charAt(j))
-            {
-                auxNode = auxNode.getRightSibling();
-            }
-            //se il j-esimo carattere combacia, passo al figlio!
-            else if (auxNode.getLeftChild()!= null)
-            {
-                auxNode = auxNode.getLeftChild();
-                j = auxNode.getSubstring()[0];
-            }
-            else
-            {
-                //se sono arrivato in un nodo che non ha figli, faccio il controllo che tutti gli altri caratteri rimanenti combacino
-                int k = j;
-                String wordAuxNode = this.dict.get(auxNode.getStringIndex());
-                while(k<wordAuxNode.length() && k < word.length() && wordAuxNode.charAt(k) == word.charAt(k))
-                    {
-                        k++;
-                    }
-                if(k==word.length()){
-                    found = true;
-                    //ho trovato un'occorrenza
-                    occurrency++;
-                    res.add(auxNode.getStringIndex());
-                    //cerco se ce ne sono altre
-                    rightSibling = auxNode.getRightSibling();
-                    if(rightSibling!=null)
-                    {
-                        //System.out.print("sono entrato ");
-                        String wordRightSibling = this.dict.get(rightSibling.getStringIndex());
-                        while(rightSibling != null )
-                        {
-                            if(wordRightSibling.charAt(rightSibling.getSubstring()[0]) == '*')
-                                res.add(rightSibling.getStringIndex());
-                            
-                            rightSibling = rightSibling.getRightSibling();
-                        }
-                    }  
-                }
-                else 
-                    //ergo dovrebbe uscire dal ciclo
-                    auxNode = auxNode.getLeftChild();
-            }
-        }
-
-        //se sono uscito perchè auxNode è diventato null, ergo non ho trovato la parola desiderata, ergo sono nella merda
-        return res;
-
-    }
 
 }

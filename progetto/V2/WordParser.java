@@ -27,7 +27,6 @@ public class WordParser {
     public boolean wordsFromFile(String pathToFile) {
     	StringTokenizer st = null; //serve per splittare una frase in parole, ove incontra uno spazio
         try {
-        	
             String auxiliaryBuffer = null; //salvo la riga attuale del file
             String auxiliaryWord = null; //salvo la singola parola filtrata
             BufferedReader importFile = Files.newBufferedReader(Paths.get(pathToFile)); //da Grilli preso 

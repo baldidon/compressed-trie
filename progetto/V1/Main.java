@@ -15,8 +15,8 @@ public class Main{
         
         tc.traverseTree(tc.getRoot());
         
-        for(int i : tc.searchWord("la"))
-            System.out.println( "\n"+ i+"\n");
+        //for(int i : tc.searchWord("la"))
+            //System.out.println( "\n"+ i+"\n");
         
 
     }
