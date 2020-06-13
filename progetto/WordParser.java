@@ -81,6 +81,8 @@ public class WordParser {
                      }
 
             }
+
+            importFile.close();
             return true;
 
         } catch (FileNotFoundException fnfe) {
