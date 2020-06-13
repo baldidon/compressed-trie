@@ -92,7 +92,7 @@ public class Node{
 	}
 
 	public boolean hasOccurrency(){
-		return !this.occurrency.isEmpty();
+		return (!this.occurrency.isEmpty());
 	}
 
 }

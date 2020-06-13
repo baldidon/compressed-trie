@@ -3,7 +3,7 @@ public class MainV2{
     public static void main(String[] args) {
 
         WordParser dict = new WordParser();
-        String path = "./prova.txt";
+        String path = "./Prova.txt";
 
         dict.wordsFromFile(path);
         System.out.println(dict.getList().size());
@@ -16,11 +16,11 @@ public class MainV2{
         System.out.println("tempo impiegato\t"+(t1-t0)/Math.pow(10, 9) +" secondi");
 				
         tc.traverseTreeV2(tc.getRoot());
-        for(int i : tc.searchWord("anima"))
+        for(int i : tc.searchWord("sproposito"))
             System.out.println( "\n"+ i+"\n");
 
-        System.out.println(tc.numOfOccurrency("anima"));
-        System.out.println(tc.isPresent("anima"));
+        System.out.println(tc.numOfOccurrency("sproposito"));
+        System.out.println(tc.isPresent("sproposito"));
         
         //System.out.println(tc.getRoot().getLeftChild().numOfOccurrency()+1);
 

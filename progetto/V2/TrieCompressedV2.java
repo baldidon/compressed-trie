@@ -287,9 +287,8 @@ public class TrieCompressedV2 {
                     if(auxNode.getListOfOccurrency()!=null && auxNode.hasOccurrency())
                     {   
                         for (int i : auxNode.getListOfOccurrency())
-                            res.add(i);
+                            res.addLast(i);
                     }
-
                 }
                 else 
                     //ergo dovrebbe uscire dal ciclo
@@ -386,7 +385,10 @@ public class TrieCompressedV2 {
                 }
                 if(k==word.length()){
                     found = true;
-                    occurrencies = auxNode.numOfOccurrency() + 1;
+                    if(auxNode.getListOfOccurrency()!= null)
+                        occurrencies = auxNode.numOfOccurrency() +1;
+                    else
+                        occurrencies =1;
                 }
                 else 
                     //ergo dovrebbe uscire dal ciclo
