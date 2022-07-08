@@ -42,7 +42,7 @@ public class WordParser {
             		
                     auxiliaryBuffer = auxiliaryBuffer.replaceAll("'", " "); //sostituisce gli apostrofi con lo spazio
 
-                    System.out.println(auxiliaryBuffer);
+                    //System.out.println(auxiliaryBuffer);
                     
                     st = new StringTokenizer(auxiliaryBuffer);
 
